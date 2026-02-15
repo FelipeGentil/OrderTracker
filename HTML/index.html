@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./scrypt.js" defer></script>
+    <title>Order Tracker</title>
+</head>
+<body>
+    <div class="container">
+        <div class="container__header">
+        <header class="header__tracker">
+            <h1 class="title__track">OrderTracker</h1>
+            <button class="btn__track" id="btnPedido">Novo pedido</button>
+            <label for="inputPedido" class="pedido__track">Pedido</label>
+            <input type="text" class="input__track" id="inputPedido" placeholder="Digite seu pedido">
+        </header>  
+        </div>
+<main class="main">
+    <div class="container__section-1">
+        <section>
+    <div class="tabs" aria-label="Filtrar por status">
+            <button class="tabs__tab is-active" id="btnTodos" type="button" aria-selected="true">
+                Todos
+            </button>
+            <button class="tabs__tab" id="btnPendente" type="button" aria-selected="false">
+                Pendente
+            </button>
+            <button class="tabs__tab" id="btnEm-andamento" type="button" aria-selected="false">
+                Em andamento
+            </button>
+            <button class="tabs__tab" id="btnConcluido" type="button" aria-selected="false">
+                Concluído
+            </button>
+    </div>
+        <select class="selecao__track" name="filtro" id="filtro__track">
+            <option value="data">Data</option>
+            <option value="prioridade">Prioridade</option>
+            <option value="nome">Nome</option>
+            <option value="situacao">Status atual</option>
+        </select> 
+        </section>
+     </div>   
+    <div class="container__section-2">
+        <section>
+        <h2 class="title__status">Lista de Pedidos</h2>
+            <ul class="lista__track" id="lista"></ul>
+        </section>
+    </div>
+</main>  
+    <div class="container__aside">
+    <aside class="sidebar" aria-labelledby="sidebar-title">
+        <header class="sidebar__title">
+            <h2 id="sidebar-title" class="sidebar-title">
+                Detalhes do Pedido
+            </h2>
+            <button class="sidebar__close" type="button" aria-labelledby="Fechar painel">
+                X
+            </button> 
+        </header>
+            <div class="side__content">
+                <p>Informações do Pedido</p>
+            </div>
+    </aside>    
+    </div>
+        <footer>
+            <div class="rodape">
+                <p>&cópia; Desenvolvido por Felipe Gentil</p>
+            </div>
+        </footer> 
+    </div> 
+    <template id="order-card-template">
+        <li class="order-card">
+        <h3 class="order-card__title">Pedido #123</h3>
+        <p class="order-card__status">Status: Pendente</p>
+        <p class="order-card__total">Total: R$ 0,00</p>
+        </li>
+    </template>  
+</body>
+</html>
