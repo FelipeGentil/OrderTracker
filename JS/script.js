@@ -28,10 +28,31 @@ let estado = {
     erro: null
 };
 
-//helpers
 const obterListaVisivel = () => {
+    if (estado.statusFiltro === "TODOS") {
         return estado.ordens;
+    } else {
+        return estado.ordens.filter(ordem => ordem.status === estado.statusFiltro)
     };
+        
+    };
+
+const setStatusFiltro = (novoStatus) => {
+    estado.statusFiltro = novoStatus   
+    render();
+};
+
+btnTodos.addEventListener("click", () => {
+    setStatusFiltro("TODOS");
+});
+
+btnEm_andamento.addEventListener("click", () => {
+    setStatusFiltro("EM-ANDAMENTO");
+});
+
+btnConcluido.addEventListener("click", () => {
+    setStatusFiltro("CONCLUIDO");
+});
 
 const render = () => {
     listaEl.innerHTML = "";
@@ -51,6 +72,8 @@ const render = () => {
     });
 
 };
+
+
 
 render();
 
