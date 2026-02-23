@@ -19,13 +19,15 @@ let estado = {
         { id: 2, descricao: "Pedido teste 2", status: "EM_ANDAMENTO", total: 0, criadaEmIso: new Date().toISOString() },
         { id: 3, descricao: "Pedido teste 3", status: "CONCLUIDO", total: 0, criadaEmIso: new Date().toISOString() }
     ],
+    proximoId: 4,
     statusFiltro: "TODOS",
     sortPor: "data"
 };
 
 const render = () => {
     lista.innerHTML = "";
-    estado.ordens.forEach(ordem => {
+    const visiveis = obterListaVisivel()
+    estado.visiveis.forEach(ordem => {
         const clone = templateCard.content.cloneNode(true);
 
         const title = clone.querySelector(".order-card__title");
@@ -42,21 +44,61 @@ const render = () => {
     });
 };
 
-const novoPedido = () => {
-    const pedido = inputPedido.value;
-    if(inputPedido === "") return;
+const criarPedido = () => {
+    const pedido = inputPedido.value.trim();
+    if (!pedido === "") return;
 
     let pedidoNovo = {
+        id: estado.proximoId,
         descricao: pedido,
-        status: "TODOS",
-        ordem: selectOrdenacao.value,
-        data: new Date().toISOString(),
+        status: "PENDENTE",
+        total: 4,
+        criadaEmIso: new Date().toISOString()
     };
 
-    estado.ordens.push(pedidoNovo);
+    estado.ordens.unshift(pedidoNovo);
+    estado.proximoId++;
     inputPedido.value = "";
-     render();
+    render();
 }
+
+btnPedido.addEventListener("click", criarPedido);
+
+inputPedido.addEventListener("keydown", (e) => {
+    if(e.key === "Enter") {
+        criarPedido();
+    };
+});
+
+const obterListaVisivel = () => {
+    if(estado.statusFiltro === "TODOS") {
+        return estado.ordens
+    } else {
+        return estado.ordens.filter(ordem => ordem.status === estado.statusFiltro);
+    };
+};
+
+const setStatusFiltro = (novoStatus) => {
+    estado.statusFiltro = novoStatus;
+    render();
+};
+
+btnTodos.addEventListener("click", () => {
+    setStatusFiltro("TODOS");
+});
+
+btnPendente.addEventListener("click", () => {
+    setStatusFiltro("PENDENTE");
+});
+
+btnEmAndamento.addEventListener("click", () => {
+    setStatusFiltro("EM_ANDAMENTO");
+});
+
+btnConcluido.addEventListener("click", () => {
+    setStatusFiltro("CONCLUIDO");
+});
+
 render();
 
 
