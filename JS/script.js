@@ -1,81 +1,67 @@
 const btnPedido = document.querySelector("#btnPedido");
-const descricaoEl = document.querySelector("#inputPedido");
+const inputPedido = document.querySelector("#inputPedido");
 
 //tabs
 const btnTodos = document.querySelector("#btnTodos");
 const btnPendente = document.querySelector("#btnPendente");
-const btnEm_andamento = document.querySelector("#btnEm-andamento");
+const btnEmAndamento = document.querySelector("#btnEm-andamento");
 const btnConcluido = document.querySelector("#btnConcluido");
 
 const selectOrdenacao = document.querySelector("#filtro__track");
-const listaEl = document.querySelector("#lista");
+const lista = document.querySelector("#lista");
 
 const btnSidebar = document.querySelector("#button");
-const templateEl = document.querySelector("#order-card-template");
+const templateCard = document.querySelector("#order-card-template");
 
 let estado = {
     ordens: [
-        { id: 1, status: "PENDENTE", total: 150 },
-        { id: 2, status: "EM_ANDAMENTO", total: 300 },
-        { id: 3, status: "CONCLUIDO", total: 500 }
+        { id: 1, descricao: "Pedido teste 1", status: "PENDENTE", total: 0, criadaEmIso: new Date().toISOString() },
+        { id: 2, descricao: "Pedido teste 2", status: "EM_ANDAMENTO", total: 0, criadaEmIso: new Date().toISOString() },
+        { id: 3, descricao: "Pedido teste 3", status: "CONCLUIDO", total: 0, criadaEmIso: new Date().toISOString() }
     ],
     statusFiltro: "TODOS",
-    buscarTexto: "",
-    sortPor: "data",
-    selecionadoId: null,
-    sideAberta: false,
-    carregando: false,
-    erro: null
+    sortPor: "data"
 };
-
-const obterListaVisivel = () => {
-    if (estado.statusFiltro === "TODOS") {
-        return estado.ordens;
-    } else {
-        return estado.ordens.filter(ordem => ordem.status === estado.statusFiltro)
-    };
-        
-    };
-
-const setStatusFiltro = (novoStatus) => {
-    estado.statusFiltro = novoStatus   
-    render();
-};
-
-btnTodos.addEventListener("click", () => {
-    setStatusFiltro("TODOS");
-});
-
-btnEm_andamento.addEventListener("click", () => {
-    setStatusFiltro("EM-ANDAMENTO");
-});
-
-btnConcluido.addEventListener("click", () => {
-    setStatusFiltro("CONCLUIDO");
-});
 
 const render = () => {
-    listaEl.innerHTML = "";
-    const listaVisivel = obterListaVisivel();
-    listaVisivel.forEach(ordem => {
-        const clone = templateEl.content.cloneNode(true);
-        clone.querySelector(".order-card__title").textContent =
-        "Pedido #" + ordem.id;
+    lista.innerHTML = "";
+    estado.ordens.forEach(ordem => {
+        const clone = templateCard.content.cloneNode(true);
 
-        clone.querySelector(".order-card__status").textContent =
-        ordem.status;
-        
-        clone.querySelector(".order-card__total").textContent = 
-        ordem.total;
-        
-        listaEl.appendChild(clone)
+        const title = clone.querySelector(".order-card__title");
+        title.textContent = `Pedido #${ordem.id}: ${ordem.descricao}`;
+
+        const status = clone.querySelector(".order-card__status");
+        status.textContent = `Status ${ordem.status}`;
+
+        const total = clone.querySelector(".order-card__total");
+        total.textContent = `Total R$${ordem.total}`;
+
+        lista.appendChild(clone);
+
     });
-
 };
 
+const novoPedido = () => {
+    const pedido = inputPedido.value;
+    if(inputPedido === "") return;
 
+    let pedidoNovo = {
+        descricao: pedido,
+        status: "TODOS",
+        ordem: selectOrdenacao.value,
+        data: new Date().toISOString(),
+    };
 
+    estado.ordens.push(pedidoNovo);
+    inputPedido.value = "";
+     render();
+}
 render();
+
+
+
+
 
 
 
