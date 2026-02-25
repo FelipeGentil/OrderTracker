@@ -24,29 +24,56 @@ let estado = {
     sortPor: "data"
 };
 
+const obterListaVisivel = () => {
+    if (estado.statusFiltro === "TODOS") {
+        return estado.ordens
+    } else {
+        return estado.ordens.filter(ordem => ordem.status === estado.statusFiltro);
+    };
+};
+
+const formatarStatus = (status) => {
+    if(status === "PENDENTE") return "Pendente";
+    if(status === "EM_ANDAMENTO") return "Em andamento";
+    if(status === "CONCLUIDO") return "Concluído";
+};
+
 const render = () => {
     lista.innerHTML = "";
     const visiveis = obterListaVisivel()
-    estado.visiveis.forEach(ordem => {
+    visiveis.forEach(ordem => {
         const clone = templateCard.content.cloneNode(true);
 
+        const li = clone.querySelector(".order-card");
+
+        if (ordem.status === "PENDENTE") {
+            li.classList.add("is-pendente");
+        }
+
+        if (ordem.status === "EM_ANDAMENTO") {
+            li.classList.add("is-andamento");
+        }
+
+        if (ordem.status === "CONCLUIDO") {
+            li.classList.add("is-concluido")
+        }
+        
         const title = clone.querySelector(".order-card__title");
         title.textContent = `Pedido #${ordem.id}: ${ordem.descricao}`;
 
         const status = clone.querySelector(".order-card__status");
-        status.textContent = `Status ${ordem.status}`;
+        status.textContent = `Status: ${formatarStatus(ordem.status)}`;
 
         const total = clone.querySelector(".order-card__total");
         total.textContent = `Total R$${ordem.total}`;
 
         lista.appendChild(clone);
-
     });
 };
 
 const criarPedido = () => {
     const pedido = inputPedido.value.trim();
-    if (!pedido === "") return;
+    if (!pedido) return;
 
     let pedidoNovo = {
         id: estado.proximoId,
@@ -65,21 +92,14 @@ const criarPedido = () => {
 btnPedido.addEventListener("click", criarPedido);
 
 inputPedido.addEventListener("keydown", (e) => {
-    if(e.key === "Enter") {
+    if (e.key === "Enter") {
         criarPedido();
     };
 });
 
-const obterListaVisivel = () => {
-    if(estado.statusFiltro === "TODOS") {
-        return estado.ordens
-    } else {
-        return estado.ordens.filter(ordem => ordem.status === estado.statusFiltro);
-    };
-};
-
 const setStatusFiltro = (novoStatus) => {
     estado.statusFiltro = novoStatus;
+    atualizarTabsAtivas(novoStatus);
     render();
 };
 
@@ -99,6 +119,39 @@ btnConcluido.addEventListener("click", () => {
     setStatusFiltro("CONCLUIDO");
 });
 
+const atualizarTabsAtivas = (statusAtual) => {
+    if (statusAtual === "TODOS") {
+        btnTodos.classList.add("is-active");
+        btnTodos.setAttribute("aria-pressed", "true");
+    } else {
+        btnTodos.classList.remove("is-active");
+        btnTodos.setAttribute("aria-pressed", "false");
+    };
+
+    if (statusAtual === "PENDENTE") {
+        btnPendente.classList.add("is-active");
+        btnPendente.setAttribute("aria-pressed", "true");
+    } else {
+        btnPendente.classList.remove("is-active");
+        btnPendente.setAttribute("aria-pressed", "false");
+    };
+
+    if (statusAtual === "CONCLUIDO") {
+        btnConcluido.classList.add("is-active");
+        btnConcluido.setAttribute("aria-pressed", "true");
+    } else {
+        btnConcluido.classList.remove("is-active");
+        btnConcluido.setAttribute("aria-pressed", "false")
+    };
+
+    if (statusAtual === "EM_ANDAMENTO") {
+        btnEmAndamento.classList.add("is-active");
+        btnEmAndamento.setAttribute("aria-pressed", "true")
+    } else {
+        btnEmAndamento.classList.remove("is-active");
+        btnEmAndamento.setAttribute("aria-pressed", "false")
+    };
+}
 render();
 
 
