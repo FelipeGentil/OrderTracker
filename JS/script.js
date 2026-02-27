@@ -24,18 +24,52 @@ let estado = {
     sortPor: "data"
 };
 
+const salvarEstado = () => {
+    localStorage.setItem("orderTracker", JSON.stringify(estado));
+};
+
+const carregarEstado = () => {
+    const estadoSalvo = localStorage.getItem("orderTracker");
+
+    if (estadoSalvo) {
+        estado = JSON.parse(estadoSalvo);
+    }
+};
+
 const obterListaVisivel = () => {
+
+    let listaFiltrada;
+
     if (estado.statusFiltro === "TODOS") {
-        return estado.ordens
+        listaFiltrada = estado.ordens;
     } else {
-        return estado.ordens.filter(ordem => ordem.status === estado.statusFiltro);
+        listaFiltrada = estado.ordens.filter(ordem => ordem.status === estado.statusFiltro);
+    }
+
+    const copia = [...listaFiltrada];
+
+    if (estado.sortPor === "nome") {
+        copia.sort((a, b) =>
+            a.descricao.localeCompare(b.descricao))
     };
+
+    if (estado.sortPor === "situacao") {
+        const peso = { PENDENTE: 1, EM_ANDAMENTO: 2, CONCLUIDO: 3 };
+        copia.sort((a, b) => peso[a.status] - peso[b.status])
+    };
+
+    if (estado.sortPor === "data") {
+        copia.sort((a, b) =>
+            b.criadaEmIso.localeCompare(a.criadaEmIso))
+    };
+
+    return copia;
 };
 
 const formatarStatus = (status) => {
-    if(status === "PENDENTE") return "Pendente";
-    if(status === "EM_ANDAMENTO") return "Em andamento";
-    if(status === "CONCLUIDO") return "Concluído";
+    if (status === "PENDENTE") return "Pendente";
+    if (status === "EM_ANDAMENTO") return "Em andamento";
+    if (status === "CONCLUIDO") return "Concluído";
 };
 
 const render = () => {
@@ -57,7 +91,7 @@ const render = () => {
         if (ordem.status === "CONCLUIDO") {
             li.classList.add("is-concluido")
         }
-        
+
         const title = clone.querySelector(".order-card__title");
         title.textContent = `Pedido #${ordem.id}: ${ordem.descricao}`;
 
@@ -86,6 +120,7 @@ const criarPedido = () => {
     estado.ordens.unshift(pedidoNovo);
     estado.proximoId++;
     inputPedido.value = "";
+    salvarEstado();
     render();
 }
 
@@ -100,6 +135,7 @@ inputPedido.addEventListener("keydown", (e) => {
 const setStatusFiltro = (novoStatus) => {
     estado.statusFiltro = novoStatus;
     atualizarTabsAtivas(novoStatus);
+    salvarEstado();
     render();
 };
 
@@ -118,6 +154,8 @@ btnEmAndamento.addEventListener("click", () => {
 btnConcluido.addEventListener("click", () => {
     setStatusFiltro("CONCLUIDO");
 });
+
+
 
 const atualizarTabsAtivas = (statusAtual) => {
     if (statusAtual === "TODOS") {
@@ -151,7 +189,18 @@ const atualizarTabsAtivas = (statusAtual) => {
         btnEmAndamento.classList.remove("is-active");
         btnEmAndamento.setAttribute("aria-pressed", "false")
     };
-}
+};
+
+const setOrdenacao = (novoValor) => {
+    estado.sortPor = novoValor;
+    salvarEstado();
+    render();
+};
+
+selectOrdenacao.addEventListener("change", (e) => { setOrdenacao(e.target.value) });
+
+carregarEstado();
+atualizarTabsAtivas(estado.statusFiltro);
 render();
 
 
