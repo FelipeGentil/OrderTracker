@@ -13,6 +13,9 @@ const lista = document.querySelector("#lista");
 const btnSidebar = document.querySelector("#button");
 const templateCard = document.querySelector("#order-card-template");
 
+const sidebarEl = document.querySelector(".sidebar");
+const sideContentEl = document.querySelector(".side__content");
+
 let estado = {
     ordens: [
         { id: 1, descricao: "Pedido teste 1", status: "PENDENTE", total: 0, criadaEmIso: new Date().toISOString() },
@@ -21,7 +24,8 @@ let estado = {
     ],
     proximoId: 4,
     statusFiltro: "TODOS",
-    sortPor: "data"
+    sortPor: "data",
+    pedidoSelecionadoId: null
 };
 
 const salvarEstado = () => {
@@ -66,10 +70,35 @@ const obterListaVisivel = () => {
     return copia;
 };
 
+const obterPedidoSelecionado = () => {
+    if(estado.pedidoSelecionadoId === null) {
+        return null;
+    } else {
+       return estado.ordens.find(ordem => ordem.id === estado.pedidoSelecionadoId );
+    };
+};
+
 const formatarStatus = (status) => {
     if (status === "PENDENTE") return "Pendente";
     if (status === "EM_ANDAMENTO") return "Em andamento";
     if (status === "CONCLUIDO") return "Concluído";
+};
+
+const renderSidebar = () => {
+    const pedido = obterPedidoSelecionado();
+
+    if (!pedido) {
+    sidebarEl.hidden = true;
+    return;
+}
+    sidebarEl.hidden = false;
+
+    sideContentEl.innerHTML = `
+    <p><strong>ID:</strong> ${pedido.id}</p>
+    <p><strong>Descrição:</strong> ${pedido.descricao}</p>
+    <p><strong>Status:</strong> ${formatarStatus(pedido.status)}</p>
+    <p><strong>Total:</strong> ${pedido.total}</p>
+    <p><strong>Data:</strong> ${new Date(pedido.criadaEmIso).toLocaleString()}</p>`;
 };
 
 const render = () => {
@@ -79,6 +108,8 @@ const render = () => {
         const clone = templateCard.content.cloneNode(true);
 
         const li = clone.querySelector(".order-card");
+
+        li.dataset.id = ordem.id;
 
         if (ordem.status === "PENDENTE") {
             li.classList.add("is-pendente");
@@ -103,6 +134,7 @@ const render = () => {
 
         lista.appendChild(clone);
     });
+    renderSidebar();
 };
 
 const criarPedido = () => {
@@ -139,6 +171,13 @@ const setStatusFiltro = (novoStatus) => {
     render();
 };
 
+lista.addEventListener("click", (e) => {
+    const card = e.target.closest(".order-card");
+    if(!card) return;
+    const id = Number(card.dataset.id)
+    selecionarPedido(id)
+});
+
 btnTodos.addEventListener("click", () => {
     setStatusFiltro("TODOS");
 });
@@ -154,8 +193,6 @@ btnEmAndamento.addEventListener("click", () => {
 btnConcluido.addEventListener("click", () => {
     setStatusFiltro("CONCLUIDO");
 });
-
-
 
 const atualizarTabsAtivas = (statusAtual) => {
     if (statusAtual === "TODOS") {
@@ -196,6 +233,20 @@ const setOrdenacao = (novoValor) => {
     salvarEstado();
     render();
 };
+
+ const selecionarPedido = (id) => {
+    estado.pedidoSelecionadoId = id;
+    salvarEstado();
+    render();
+ };
+
+ const fecharSidebar = () => {
+    estado.pedidoSelecionadoId = null;
+    salvarEstado();
+    render();
+ };
+
+ btnSidebar.addEventListener("click", fecharSidebar);
 
 selectOrdenacao.addEventListener("change", (e) => { setOrdenacao(e.target.value) });
 
