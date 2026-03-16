@@ -1,0 +1,26 @@
+
+
+body {
+    min-height: 100vh;
+    line-height: normal;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    min-height: 100vh;
+    margin: 0 auto;
+    gap: 25px;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: 1.6fr 0.9fr;
+    align-items: start;
+    gap: 25px;
+}
+    
