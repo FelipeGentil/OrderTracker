@@ -8,17 +8,29 @@
     <title>OrderTracker</title>
 </head>
 <body>
-    <div class="container">
+        <div class="container">
         <div class="container__header">
-        <header class="header__tracker">
-            <h1 class="title__track">OrderTracker</h1>
+
+    <header class="header__tracker">
+
+    <div class="logo">
+        <img src="../IMG/Design_sem_nome-removebg-preview.png" alt="Order Tracker">
+    </div>
+
+        <div class="header__actions">
+
+            <div class="field">
+                <label for="inputPedido" class="pedido__track">Pedido</label>
+                <input type="text" class="input__track" placeholder="Digite seu pedido" id="inputPedido">
+            </div>
             <button class="btn__track" id="btnPedido">Novo pedido</button>
-            <label for="inputPedido" class="pedido__track">Pedido</label>
-            <input type="text" class="input__track" id="inputPedido" placeholder="Digite seu pedido">
-        </header>  
+
         </div>
-<main class="main">
-    <div class="container__section-1">
+
+    </header>
+        </div>
+
+        <div class="container__section-1">
         <section>
     <div class="tabs" aria-label="Filtrar por status">
             <button class="tabs__tab is-active" id="btnTodos" type="button" aria-pressed="true">
@@ -34,13 +46,16 @@
                 Concluído
             </button>
     </div>
-        <select class="selecao__track" name="filtro" id="filtro__track">
-            <option value="data">Data</option>
-            <option value="nome">Nome</option>
-            <option value="situacao">Status atual</option>
-        </select> 
+            <select class="selecao__track" name="filtro" id="filtro__track">
+                <option value="data">Data</option>
+                <option value="nome">Nome</option>
+                <option value="situacao">Status atual</option>
+            </select> 
         </section>
      </div>   
+
+<main class="main">
+    
     <div class="container__section-2">
         <section>
         <h2 class="title__status">Lista de Pedidos</h2>
@@ -48,19 +63,21 @@
         </section>
     </div>
 </main>  
+
     <div class="container__aside">
     <aside class="sidebar" aria-labelledby="sidebar-title">
         <header class="sidebar__title">
             <h2 id="sidebar-title" class="sidebar-title">
                 Detalhes do Pedido
             </h2>
-            <button class="sidebar__close" id="button" aria-label="Fechar painel">
-                X
-            </button> 
+            
         </header>
             <div class="side__content">
                 <p>Informações do Pedido</p>
             </div>
+            <button class="sidebar__close" id="button" aria-label="Fechar painel">
+                Ocultar detalhes
+            </button>
     </aside>    
     </div>
         <footer>
