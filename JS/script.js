@@ -28,6 +28,19 @@ let estado = {
     pedidoSelecionadoId: null
 };
 
+const pedidos = [
+    {
+        id: 1,
+        titulo: "pedido 1",
+        status: "pendente"
+    },
+    {
+        id: 2, 
+        titulo: "pedido 2",
+        status: "andamento"
+    }
+];
+
 const salvarEstado = () => {
     localStorage.setItem("orderTracker", JSON.stringify(estado));
 };
@@ -105,37 +118,46 @@ const render = () => {
     lista.innerHTML = "";
     const visiveis = obterListaVisivel()
     visiveis.forEach(ordem => {
-        const clone = templateCard.content.cloneNode(true);
-
-        const li = clone.querySelector(".order-card");
-
-        li.dataset.id = ordem.id;
-
-        if (ordem.status === "PENDENTE") {
-            li.classList.add("is-pendente");
-        }
-
-        if (ordem.status === "EM_ANDAMENTO") {
-            li.classList.add("is-andamento");
-        }
-
-        if (ordem.status === "CONCLUIDO") {
-            li.classList.add("is-concluido")
-        }
-
-        const title = clone.querySelector(".order-card__title");
-        title.textContent = `Pedido #${ordem.id}: ${ordem.descricao}`;
-
-        const status = clone.querySelector(".order-card__status");
-        status.textContent = `Status: ${formatarStatus(ordem.status)}`;
-
-        const total = clone.querySelector(".order-card__total");
-        total.textContent = `Total R$${ordem.total}`;
-
-        lista.appendChild(clone);
+        const card = criarCard(ordem);
+        lista.appendChild(card);
     });
     renderSidebar();
 };
+
+const criarCard = (ordem) => {
+    const clone = templateCard.content.cloneNode(true);
+    const li = clone.querySelector(".order-card");
+    li.dataset.id = ordem.id;
+    novoStatus(li, ordem.status);
+    preencherConteudo(clone, ordem);
+    return clone;
+}
+
+const novoStatus = (li, status) => {
+        if (status === "PENDENTE") {
+            li.classList.add("is-pendente");
+        }
+
+        if (status === "EM_ANDAMENTO") {
+            li.classList.add("is-andamento");
+        }
+
+        if (status === "CONCLUIDO") {
+            li.classList.add("is-concluido")
+        }
+    }
+
+const preencherConteudo = (clone, pedido) => {
+    const title = clone.querySelector(".order-card__title");
+        title.textContent = `Pedido #${pedido.id}: ${pedido.descricao}`;
+
+        const status = clone.querySelector(".order-card__status");
+        status.textContent = `Status: ${formatarStatus(pedido.status)}`;
+
+        const total = clone.querySelector(".order-card__total");
+        total.textContent = `Total R$${pedido.total}`;
+
+}
 
 const criarPedido = () => {
     const pedido = inputPedido.value.trim();
